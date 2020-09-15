@@ -1,0 +1,6 @@
+1. Compile mirai-console, mirai-core, mirai-core-jvm, mirai-core-qqandroid of correct version, and put them in this directory
+2. Edit ./mirai-console-wrapper/src/main/kotlin/net/mamoe/mirai/console/wrapper/WrapperMain.kt, fill the paths to these .jar files in the URLClassLoader
+3. Build and put built jar in this directory
+4. Check the names according to run.sh
+5. run run.sh
+

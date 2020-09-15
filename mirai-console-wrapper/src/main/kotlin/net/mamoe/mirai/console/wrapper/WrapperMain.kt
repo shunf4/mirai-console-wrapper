@@ -189,43 +189,54 @@ object WrapperMain {
             type = defaultType
         }
 
-        println("Starting version check...")
-        runBlocking {
+        // println("Starting version check...")
+        /* runBlocking {
             launch {
                 CoreUpdater.versionCheck(strategy)
             }
             launch {
                 ConsoleUpdater.versionCheck(type, strategy)
             }
-        }
+        }*/
 
         println("Version check complete, starting Mirai")
-        println("shadow-Protocol:" + CoreUpdater.getProtocolLib()!!)
+        /* println("shadow-Protocol:" + CoreUpdater.getProtocolLib()!!)
         println("Console        :" + ConsoleUpdater.getFile()!!)
-        println("Root           :" + System.getProperty("user.dir") + "/")
+        println("Root           :" + System.getProperty("user.dir") + "/") */
 
         start(type)
     }
 
     internal fun start(type: ConsoleType) {
 
-        val loader = MiraiClassLoader(
+        /* val loader = MiraiClassLoader(
                 CoreUpdater.getProtocolLib()!!,
                 ConsoleUpdater.getFile()!!,
                 WrapperMain::class.java.classLoader
-        )
+        )*/
 
-        try {
+        val loader = URLClassLoader(arrayOf(
+// File("./mirai-console-0.5.2-all.jar").toURI().toURL(),
+// File("./mirai-core-qqandroid-1.0.0-all.jar").toURI().toURL(),
+// File("../../content/kotlin-stdlib-1.4.0.jar").toURI().toURL(),
+File("./mirai-console-0.5.2-all.jar").toURI().toURL(),
+File("./mirai-core-jvm-1.2.2-all.jar").toURI().toURL(),
+File("./mirai-core-1.2.2-all.jar").toURI().toURL(),
+File("./mirai-core-qqandroid-1.2.2-all.jar").toURI().toURL(),
+))
+
+        // try {
+            // loader.loadClass("net.mamoe.mirai.console.pure.MiraiConsolePureLoader")
             loader.loadClass("net.mamoe.mirai.BotFactoryJvm")
-        } catch (e: ClassNotFoundException) {
-            System.err.println("Found mirai-core file broken, re-downloading...")
-            loader.close()
-            CoreUpdater.getProtocolLib()?.delete()
-            WrapperCli.run()
-            return
-        }
+        // } catch (e: ClassNotFoundException) {
+        //    System.err.println("Found mirai-core file broken, re-downloading...")
+        //    // loader.close()
+        //    CoreUpdater.getProtocolLib()?.delete()
+        //    WrapperCli.run()
+        //    return
+        //}
 
-        try {
+        // try {
             loader.loadClass(
                             when (type) {
                                 ConsoleType.Pure -> "net.mamoe.mirai.console.pure.MiraiConsolePureLoader"
@@ -234,12 +245,12 @@ object WrapperMain {
                             }
                     ).getMethod("load", String::class.java, String::class.java)
                     .invoke(null, CoreUpdater.getCurrentVersion(), ConsoleUpdater.getCurrentVersion())
-        } catch (e: ClassNotFoundException) {
-            System.err.println("Found mirai-console file broken, re-downloading...")
-            loader.close()
-            ConsoleUpdater.getFile()?.delete()
-            WrapperCli.run()
-        }
+        //} catch (e: ClassNotFoundException) {
+        //    System.err.println("Found mirai-console file broken, re-downloading...")
+        //    // loader.close()
+        //    ConsoleUpdater.getFile()?.delete()
+        //    WrapperCli.run()
+        //}
     }
 }
 
